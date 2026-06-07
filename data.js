@@ -1,100 +1,117 @@
-/* このファイルは管理画面 admin.html から書き出されました */
+/* ============================================================
+   サイトの全データ（唯一の管理元）
+   ★ 通常は管理画面 admin.html から編集してください（手入力も可）
+   - このファイル1つで HP・ネットショップの中身が決まります
+   - 画像は web-ec-kit/images/ に入れて、ファイル名をここに書きます
+   ============================================================ */
+
 window.SITE = {
-  "name": "mofa",
-  "logo": "mofa",
-  "tagline": "ヘアサロン × ライフスタイルセレクトショップ",
-  "heroTitle": "髪を整え、暮らしを選ぶ。",
-  "heroText": "salon & store LUCE",
-  "heroImage": "",
-  "colorMain": "#7c8a6e",
-  "colorAccent": "#b89b5e",
-  "colorBg": "#f7f4ec",
-  "lineUrl": "https://lin.ee/XXXXXXX",
-  "formUrl": "https://forms.gle/XXXXXXX",
-  "buyUrl": "https://lin.ee/XXXXXXX",
-  "salonMenu": [
-    {
-      "name": "カット",
-      "price": "¥5,500〜"
-    },
-    {
-      "name": "カラー＋トリートメント",
-      "price": "¥9,900〜"
-    },
-    {
-      "name": "ヘッドスパ（30分）",
-      "price": "¥4,400〜"
-    }
+  /* 基本情報 ---------------------------------------------- */
+  name:      "salon & store LUCE",   // 店名（フッター等）
+  logo:      "LUCE",                  // ヘッダーのロゴ表示
+  tagline:   "ヘアサロン × ライフスタイルセレクトショップ",
+  heroTitle: "髪を整え、暮らしを選ぶ。",
+  heroText:  "salon & store LUCE",
+  heroImage: "",                      // 例 "images/hero.jpg"（空なら色背景）
+
+  /* デザイン（色） ---------------------------------------- */
+  colorMain:   "#7c8a6e",
+  colorAccent: "#b89b5e",
+  colorBg:     "#f7f4ec",
+
+  /* 動線（予約・問い合わせ・購入の飛び先） ---------------- */
+  lineUrl:    "https://lin.ee/XXXXXXX",    // LINE公式の友だち追加URL
+  formUrl:    "https://forms.gle/XXXXXXX", // Googleフォーム等のURL
+  buyUrl:     "https://lin.ee/XXXXXXX",    // 商品「購入する」の既定の飛び先
+
+  /* 注文フォーム（手作りEC: Googleフォームで受注・住所収集） ---
+     orderFormUrl を設定すると、商品ボタンが「ご注文はこちら」になり、
+     商品名が入った状態の注文フォームへ飛びます（空なら従来の購入URL動作）。
+     entry ID の調べ方は order-flow-guide.md 参照。 */
+  orderFormUrl:          "",  // 例 "https://docs.google.com/forms/d/e/XXXX/viewform"
+  orderFormProductEntry: "",  // 商品名を渡す項目ID 例 "entry.1234567890"
+  orderFormPriceEntry:   "",  // 価格を渡す項目ID（任意） 例 "entry.0987654321"
+
+  /* サロンメニュー（料金） -------------------------------- */
+  salonMenu: [
+    { name: "カット",                  price: "¥5,500〜" },
+    { name: "カラー＋トリートメント",   price: "¥9,900〜" },
+    { name: "ヘッドスパ（30分）",       price: "¥4,400〜" }
   ],
-  "postal": "000-0000",
-  "address": "○○県○○市○○ 1-2-3",
-  "tel": "00-0000-0000",
-  "hours": "10:00 - 19:00",
-  "holiday": "毎週火曜・第3水曜",
-  "mapEmbed": "https://www.google.com/maps?q=tokyo+station&output=embed",
-  "seoTitle": "salon & store LUCE｜セレクトショップ併設の美容サロン",
-  "seoDesc": "髪を整え、暮らしを選ぶ。ヘアサロンとライフスタイルセレクトショップを併設した salon & store LUCE。"
+
+  /* 店舗情報（アクセス） ---------------------------------- */
+  postal:  "000-0000",
+  address: "○○県○○市○○ 1-2-3",
+  tel:     "00-0000-0000",
+  hours:   "10:00 - 19:00",
+  holiday: "毎週火曜・第3水曜",
+  mapEmbed: "https://www.google.com/maps?q=tokyo+station&output=embed", // Googleマップ「地図を埋め込む」のURL
+
+  /* SEO（検索・SNSシェア時の表示） ------------------------ */
+  seoTitle: "salon & store LUCE｜セレクトショップ併設の美容サロン",
+  seoDesc:  "髪を整え、暮らしを選ぶ。ヘアサロンとライフスタイルセレクトショップを併設した salon & store LUCE。"
 };
 
+/* 商品データ ---------------------------------------------- */
 window.PRODUCTS = [
   {
-    "id": "hair-oil-01",
-    "name": "モイスト ヘアオイル 100ml",
-    "price": 3300,
-    "category": "ヘアケア",
-    "image": "",
-    "stock": true,
-    "badge": "人気",
-    "desc": "サロン施術の仕上げにも使う保湿オイル。乾燥した毛先をなめらかに整えます。",
-    "note": "スタイリスト一言: お風呂上がりのタオルドライ後に2〜3滴。",
-    "buyUrl": ""
+    id: "hair-oil-01",
+    name: "モイスト ヘアオイル 100ml",
+    price: 3300,
+    category: "ヘアケア",
+    image: "",
+    stock: true,
+    badge: "人気",
+    desc: "サロン施術の仕上げにも使う保湿オイル。乾燥した毛先をなめらかに整えます。",
+    note: "スタイリスト一言: お風呂上がりのタオルドライ後に2〜3滴。",
+    buyUrl: ""
   },
   {
-    "id": "shampoo-01",
-    "name": "アミノ酸シャンプー 300ml",
-    "price": 2860,
-    "category": "ヘアケア",
-    "image": "",
-    "stock": true,
-    "badge": "",
-    "desc": "頭皮にやさしいアミノ酸系。毎日のケアで指通りの良い髪へ。",
-    "note": "スタイリスト一言: カラーの色持ちを良くしたい方に。",
-    "buyUrl": ""
+    id: "shampoo-01",
+    name: "アミノ酸シャンプー 300ml",
+    price: 2860,
+    category: "ヘアケア",
+    image: "",
+    stock: true,
+    badge: "",
+    desc: "頭皮にやさしいアミノ酸系。毎日のケアで指通りの良い髪へ。",
+    note: "スタイリスト一言: カラーの色持ちを良くしたい方に。",
+    buyUrl: ""
   },
   {
-    "id": "balm-01",
-    "name": "マルチバーム 30g",
-    "price": 1980,
-    "category": "スタイリング",
-    "image": "",
-    "stock": true,
-    "badge": "新入荷",
-    "desc": "髪にも肌にも使えるバーム。束感スタイリングから保湿まで1つで。",
-    "note": "スタイリスト一言: 少量を手のひらで溶かしてから毛先へ。",
-    "buyUrl": ""
+    id: "balm-01",
+    name: "マルチバーム 30g",
+    price: 1980,
+    category: "スタイリング",
+    image: "",
+    stock: true,
+    badge: "新入荷",
+    desc: "髪にも肌にも使えるバーム。束感スタイリングから保湿まで1つで。",
+    note: "スタイリスト一言: 少量を手のひらで溶かしてから毛先へ。",
+    buyUrl: ""
   },
   {
-    "id": "towel-01",
-    "name": "今治オーガニックタオル",
-    "price": 2200,
-    "category": "暮らしの雑貨",
-    "image": "",
-    "stock": true,
-    "badge": "",
-    "desc": "吸水性にすぐれた今治タオル。ギフトにも喜ばれる定番です。",
-    "note": "ギフトラッピング承ります (+¥330)。",
-    "buyUrl": ""
+    id: "towel-01",
+    name: "今治オーガニックタオル",
+    price: 2200,
+    category: "暮らしの雑貨",
+    image: "",
+    stock: true,
+    badge: "",
+    desc: "吸水性にすぐれた今治タオル。ギフトにも喜ばれる定番です。",
+    note: "ギフトラッピング承ります (+¥330)。",
+    buyUrl: ""
   },
   {
-    "id": "giftset-01",
-    "name": "ヘアケア ギフトセット",
-    "price": 5500,
-    "category": "ギフト",
-    "image": "",
-    "stock": false,
-    "badge": "予約受付",
-    "desc": "シャンプー＋ヘアオイルの人気2点を、専用ボックスでお届け。",
-    "note": "母の日・誕生日のプレゼントに。",
-    "buyUrl": ""
+    id: "giftset-01",
+    name: "ヘアケア ギフトセット",
+    price: 5500,
+    category: "ギフト",
+    image: "",
+    stock: false,
+    badge: "予約受付",
+    desc: "シャンプー＋ヘアオイルの人気2点を、専用ボックスでお届け。",
+    note: "母の日・誕生日のプレゼントに。",
+    buyUrl: ""
   }
 ];
