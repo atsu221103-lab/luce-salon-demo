@@ -82,6 +82,18 @@ footer { background: var(--color-text); color: rgba(255,255,255,.75); text-align
   var md = document.getElementById("meta-desc"); if (md) md.setAttribute("content", "オンラインストア｜" + (S.name || ""));
 
   var FALLBACK_BUY_URL = S.buyUrl || S.lineUrl || "#";
+
+  // 注文ボタンの飛び先：注文フォームが設定されていれば「ご注文はこちら」（商品名を自動入力）
+  function orderInfo(p) {
+    if (S.orderFormUrl) {
+      var u = S.orderFormUrl + (S.orderFormUrl.indexOf("?") >= 0 ? "&" : "?") + "usp=pp_url";
+      if (S.orderFormProductEntry) u += "&" + S.orderFormProductEntry + "=" + encodeURIComponent(p.name || "");
+      if (S.orderFormPriceEntry)   u += "&" + S.orderFormPriceEntry + "=" + encodeURIComponent(p.price || "");
+      return { url: u, label: "ご注文はこちら" };
+    }
+    return { url: p.buyUrl || FALLBACK_BUY_URL, label: "購入する" };
+  }
+
   var grid = document.getElementById("grid");
   var filtersEl = document.getElementById("filters");
   var cats = ["すべて"].concat(products.map(function (p) { return p.category; })
@@ -105,13 +117,13 @@ footer { background: var(--color-text); color: rgba(255,255,255,.75); text-align
     grid.innerHTML = "";
     products.filter(function (p) { return filter === "すべて" || p.category === filter; })
       .forEach(function (p) {
-        var buyUrl = p.buyUrl || FALLBACK_BUY_URL;
+        var oi = orderInfo(p);
         var thumb = p.image ? '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" />' : "画像 (準備中)";
         var badge = p.badge ? '<span class="badge">' + esc(p.badge) + "</span>" : "";
         var soldout = p.stock ? "" : '<div class="soldout">SOLD OUT</div>';
         var note = p.note ? '<p class="note">' + esc(p.note) + "</p>" : "";
         var buyBtn = p.stock
-          ? '<a class="buy" href="' + esc(buyUrl) + '" target="_blank" rel="noopener">購入する</a>'
+          ? '<a class="buy" href="' + esc(oi.url) + '" target="_blank" rel="noopener">' + oi.label + "</a>"
           : '<span class="buy disabled">売り切れ</span>';
         grid.insertAdjacentHTML("beforeend",
           '<div class="item"><div class="thumb">' + thumb + badge + soldout + "</div>" +

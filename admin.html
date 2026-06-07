@@ -135,6 +135,17 @@ code { background:#f0ede3; padding:1px 6px; border-radius:4px; font-size:.85em; 
     <button class="btn btn-add" id="addProduct">＋ 商品を追加</button>
   </div>
 
+  <!-- 注文フォーム連携（手作りEC） -->
+  <div class="card">
+    <h2>⑦ 注文フォーム連携（手作りEC）</h2>
+    <p class="hint" style="margin-bottom:12px">Googleフォームで受注・住所を集める設定です。設定すると、ショップの各商品ボタンが「ご注文はこちら」になり、商品名が入った状態でフォームが開きます。作り方は <code>order-flow-guide.md</code> 参照。</p>
+    <div class="field"><label>注文フォームURL（GoogleフォームのviewformのURL）</label><input type="text" data-s="orderFormUrl" placeholder="空なら従来の購入URL動作"></div>
+    <div class="row">
+      <div class="field"><label>商品名を渡す項目ID</label><input type="text" data-s="orderFormProductEntry" placeholder="例: entry.1234567890"></div>
+      <div class="field"><label>価格を渡す項目ID（任意）</label><input type="text" data-s="orderFormPriceEntry" placeholder="例: entry.0987654321"></div>
+    </div>
+  </div>
+
   <details class="help">
     <summary>💡 保存と公開について</summary>
     <p><b>自動公開モード（おすすめ）</b><br>

@@ -24,6 +24,14 @@ window.SITE = {
   formUrl:    "https://forms.gle/XXXXXXX", // Googleフォーム等のURL
   buyUrl:     "https://lin.ee/XXXXXXX",    // 商品「購入する」の既定の飛び先
 
+  /* 注文フォーム（手作りEC: Googleフォームで受注・住所収集） ---
+     orderFormUrl を設定すると、商品ボタンが「ご注文はこちら」になり、
+     商品名が入った状態の注文フォームへ飛びます（空なら従来の購入URL動作）。
+     entry ID の調べ方は order-flow-guide.md 参照。 */
+  orderFormUrl:          "",  // 例 "https://docs.google.com/forms/d/e/XXXX/viewform"
+  orderFormProductEntry: "",  // 商品名を渡す項目ID 例 "entry.1234567890"
+  orderFormPriceEntry:   "",  // 価格を渡す項目ID（任意） 例 "entry.0987654321"
+
   /* サロンメニュー（料金） -------------------------------- */
   salonMenu: [
     { name: "カット",                  price: "¥5,500〜" },
