@@ -3,75 +3,37 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<!-- ============================================================
-     ① SEO / SNSシェア設定  ★ここを店舗ごとに書き換える
-     ============================================================ -->
-<title>salon &amp; store LUCE｜セレクトショップ併設の美容サロン</title>
-<meta name="description" content="髪を整え、暮らしを選ぶ。ヘアサロンとライフスタイルセレクトショップを併設した『salon & store LUCE』。施術で使ったアイテムはその場でお持ち帰りいただけます。" />
-
-<!-- SNSでシェアされたときの見え方 (OGP) -->
+<title>salon &amp; store LUCE</title>
+<meta name="description" id="meta-desc" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="salon & store LUCE｜セレクトショップ併設の美容サロン" />
-<meta property="og:description" content="髪を整え、暮らしを選ぶ。ヘアサロン × ライフスタイルセレクトショップ。" />
-<meta property="og:image" content="./images/ogp.jpg" />
-<meta property="og:url" content="https://example.com/" />
+<meta property="og:title" id="og-title" content="" />
+<meta property="og:description" id="og-desc" content="" />
 <meta name="twitter:card" content="summary_large_image" />
-
-<!-- フォント (Google Fonts・無料) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet" />
-
 <style>
-/* ============================================================
-   ② ブランド設定  ★色・フォントはここだけ変えれば全体が変わる
-   ============================================================ */
 :root {
-  --color-main:    #7c8a6e;   /* メインカラー (くすみグリーン) */
-  --color-accent:  #b89b5e;   /* アクセント (ゴールド) */
-  --color-bg:      #f7f4ec;   /* 背景 (生成り) */
-  --color-text:    #3a3a36;   /* 文字 */
-  --color-white:   #ffffff;
-  --font-heading:  "Shippori Mincho", serif;   /* 見出し: 明朝 */
-  --font-body:     "Noto Sans JP", sans-serif;  /* 本文: ゴシック */
+  --color-main: #7c8a6e; --color-accent: #b89b5e; --color-bg: #f7f4ec;
+  --color-text: #3a3a36; --color-white: #fff;
+  --font-heading: "Shippori Mincho", serif; --font-body: "Noto Sans JP", sans-serif;
   --maxw: 1080px;
 }
-
-/* ---- ここから下は基本そのままでOK (デザインの土台) ---- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-body);
-  color: var(--color-text);
-  background: var(--color-bg);
-  line-height: 1.8;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
+body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); line-height: 1.8; font-size: 16px; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
 .wrap { width: 90%; max-width: var(--maxw); margin: 0 auto; }
 .section { padding: 80px 0; }
 h2.title { font-family: var(--font-heading); font-size: 1.9rem; text-align: center; margin-bottom: 12px; letter-spacing: .05em; }
 .subtitle { text-align: center; color: var(--color-accent); letter-spacing: .2em; font-size: .8rem; margin-bottom: 40px; text-transform: uppercase; }
-
-/* ボタン */
-.btn {
-  display: inline-block; padding: 14px 34px; border-radius: 999px;
-  font-weight: 700; letter-spacing: .05em; transition: .25s; cursor: pointer;
-}
+.btn { display: inline-block; padding: 14px 34px; border-radius: 999px; font-weight: 700; letter-spacing: .05em; transition: .25s; cursor: pointer; }
 .btn-main { background: var(--color-main); color: var(--color-white); }
 .btn-main:hover { opacity: .85; }
 .btn-line { background: #06c755; color: #fff; }
 .btn-line:hover { opacity: .85; }
-
-/* ヘッダー */
-header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(247,244,236,.92); backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(0,0,0,.06);
-}
+header { position: sticky; top: 0; z-index: 100; background: rgba(247,244,236,.92); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(0,0,0,.06); }
 .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
 .logo { font-family: var(--font-heading); font-size: 1.3rem; letter-spacing: .1em; }
 .nav ul { display: flex; gap: 28px; list-style: none; }
@@ -79,19 +41,9 @@ header {
 .nav ul a:hover { color: var(--color-main); }
 .nav-cta { display: none; }
 @media (min-width: 768px) { .nav-cta { display: inline-block; font-size: .85rem; padding: 10px 22px; } }
-
-/* ヒーロー */
-.hero {
-  min-height: 80vh; display: flex; align-items: center; justify-content: center;
-  text-align: center; color: var(--color-white);
-  /* ★背景画像を入れる場合は url(./images/hero.jpg) に差し替え */
-  background: linear-gradient(rgba(60,58,54,.35), rgba(60,58,54,.45)), var(--color-main);
-  background-size: cover; background-position: center;
-}
+.hero { min-height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--color-white); background: linear-gradient(rgba(60,58,54,.35), rgba(60,58,54,.45)), var(--color-main); background-size: cover; background-position: center; }
 .hero h1 { font-family: var(--font-heading); font-size: clamp(1.8rem, 5vw, 3rem); letter-spacing: .08em; margin-bottom: 18px; }
 .hero p { font-size: 1rem; margin-bottom: 32px; }
-
-/* 2カラム (サロン × ショップ) */
 .cols { display: grid; gap: 30px; grid-template-columns: 1fr; }
 @media (min-width: 768px) { .cols { grid-template-columns: 1fr 1fr; } }
 .card { background: var(--color-white); border-radius: 14px; padding: 36px; box-shadow: 0 6px 24px rgba(0,0,0,.05); }
@@ -99,40 +51,28 @@ header {
 .card ul { list-style: none; margin-top: 16px; }
 .card li { padding: 8px 0; border-bottom: 1px dashed rgba(0,0,0,.1); display: flex; justify-content: space-between; }
 .card li span { color: var(--color-accent); font-weight: 700; }
-
-/* 特徴 3カラム */
 .features { display: grid; gap: 24px; grid-template-columns: 1fr; }
 @media (min-width: 768px) { .features { grid-template-columns: repeat(3,1fr); } }
 .feature { text-align: center; padding: 20px; }
 .feature .num { font-family: var(--font-heading); font-size: 2rem; color: var(--color-accent); }
 .feature h4 { margin: 10px 0; font-size: 1.05rem; }
-
-/* CTA帯 */
 .cta { background: var(--color-main); color: var(--color-white); text-align: center; }
 .cta h2 { font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 14px; }
 .cta .btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
-
-/* アクセス */
 .access-grid { display: grid; gap: 30px; grid-template-columns: 1fr; align-items: start; }
 @media (min-width: 768px) { .access-grid { grid-template-columns: 1fr 1fr; } }
 .access dl { display: grid; grid-template-columns: 90px 1fr; gap: 12px 16px; }
 .access dt { color: var(--color-accent); font-weight: 700; }
 .map-embed iframe { width: 100%; height: 280px; border: 0; border-radius: 12px; }
-
-/* フッター */
 footer { background: var(--color-text); color: rgba(255,255,255,.8); text-align: center; padding: 40px 0; font-size: .85rem; }
 footer .logo { color: #fff; margin-bottom: 8px; }
 </style>
 </head>
-
 <body>
 
-<!-- ============================================================
-     ③ ヘッダー  ★店名・メニュー名を編集
-     ============================================================ -->
 <header>
   <div class="wrap nav">
-    <div class="logo">LUCE</div>
+    <div class="logo" id="logo">LUCE</div>
     <nav>
       <ul>
         <li><a href="#salon">サロン</a></li>
@@ -145,34 +85,24 @@ footer .logo { color: #fff; margin-bottom: 8px; }
   </div>
 </header>
 
-<!-- ④ ヒーロー (最初に見える大きな部分) -->
-<section class="hero">
+<section class="hero" id="hero">
   <div class="wrap">
-    <h1>髪を整え、暮らしを選ぶ。</h1>
-    <p>ヘアサロン × ライフスタイルセレクトショップ<br />salon &amp; store LUCE</p>
+    <h1 id="hero-title"></h1>
+    <p id="hero-text"></p>
     <a href="#reserve" class="btn btn-main">はじめての方へ・ご予約</a>
   </div>
 </section>
 
-<!-- ⑤ サロン と ショップ (この事業の2本柱) -->
 <section class="section" id="salon">
   <div class="wrap">
     <h2 class="title">SALON &amp; STORE</h2>
     <p class="subtitle">two services, one place</p>
     <div class="cols">
-
-      <!-- サロン側 -->
       <div class="card">
         <h3>Hair Salon — 整える</h3>
         <p>髪と頭皮の状態を見極め、あなたに合うケアをご提案します。施術で使ったアイテムは、そのままお持ち帰りいただけます。</p>
-        <ul>
-          <li>カット <span>¥5,500〜</span></li>
-          <li>カラー＋トリートメント <span>¥9,900〜</span></li>
-          <li>ヘッドスパ（30分） <span>¥4,400〜</span></li>
-        </ul>
+        <ul id="salon-menu"></ul>
       </div>
-
-      <!-- ショップ側 (ここがEC/セレクトショップへの導線) -->
       <div class="card" id="shop">
         <h3>Select Store — 選ぶ</h3>
         <p>スタイリストが実際に使い、選んだアイテムだけを並べています。サロン帰りの「これ、家でも欲しい」に応えます。</p>
@@ -182,55 +112,33 @@ footer .logo { color: #fff; margin-bottom: 8px; }
           <li>オンラインストア <span><a href="./shop.html" style="color:var(--color-main);text-decoration:underline">商品を見る →</a></span></li>
         </ul>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- ⑥ こだわり (3つの特徴) -->
 <section class="section" id="features" style="background:var(--color-white)">
   <div class="wrap">
     <h2 class="title">LUCEのこだわり</h2>
     <p class="subtitle">our promise</p>
     <div class="features">
-      <div class="feature">
-        <div class="num">01</div>
-        <h4>使ったものを買える</h4>
-        <p>施術で体感したアイテムを、その場でもオンラインでも購入できます。</p>
-      </div>
-      <div class="feature">
-        <div class="num">02</div>
-        <h4>選び抜いた品ぞろえ</h4>
-        <p>スタイリストが本当に良いと思ったものだけをセレクトしています。</p>
-      </div>
-      <div class="feature">
-        <div class="num">03</div>
-        <h4>暮らしまで提案</h4>
-        <p>髪だけでなく、毎日が少し豊かになる時間をお届けします。</p>
-      </div>
+      <div class="feature"><div class="num">01</div><h4>使ったものを買える</h4><p>施術で体感したアイテムを、その場でもオンラインでも購入できます。</p></div>
+      <div class="feature"><div class="num">02</div><h4>選び抜いた品ぞろえ</h4><p>スタイリストが本当に良いと思ったものだけをセレクトしています。</p></div>
+      <div class="feature"><div class="num">03</div><h4>暮らしまで提案</h4><p>髪だけでなく、毎日が少し豊かになる時間をお届けします。</p></div>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     ⑦ ご予約・お問い合わせ  ★無料の予約・問い合わせ手段をここに集約
-     - LINE公式: 友だち追加URLに差し替え
-     - フォーム: Googleフォーム or Tally のURLに差し替え
-     ============================================================ -->
 <section class="section cta" id="reserve">
   <div class="wrap">
     <h2>ご予約・お問い合わせ</h2>
     <p>ご予約・ご相談はLINEが便利です。フォームからもお気軽にどうぞ。</p>
     <div class="btns">
-      <!-- ★LINE公式の友だち追加URLに差し替え -->
-      <a href="https://lin.ee/XXXXXXX" class="btn btn-line" target="_blank" rel="noopener">LINEで予約する</a>
-      <!-- ★Googleフォーム / Tally のURLに差し替え -->
-      <a href="https://forms.gle/XXXXXXX" class="btn btn-main" target="_blank" rel="noopener" style="background:var(--color-accent)">フォームで問い合わせ</a>
+      <a id="line-btn" href="#" class="btn btn-line" target="_blank" rel="noopener">LINEで予約する</a>
+      <a id="form-btn" href="#" class="btn btn-main" target="_blank" rel="noopener" style="background:var(--color-accent)">フォームで問い合わせ</a>
     </div>
   </div>
 </section>
 
-<!-- ⑧ アクセス  ★住所・営業時間・地図を編集 -->
 <section class="section" id="access">
   <div class="wrap">
     <h2 class="title">ACCESS</h2>
@@ -238,52 +146,91 @@ footer .logo { color: #fff; margin-bottom: 8px; }
     <div class="access-grid">
       <div class="access">
         <dl>
-          <dt>店名</dt><dd>salon &amp; store LUCE</dd>
-          <dt>住所</dt><dd>〒000-0000 ○○県○○市○○ 1-2-3</dd>
-          <dt>電話</dt><dd>00-0000-0000</dd>
-          <dt>営業時間</dt><dd>10:00 - 19:00</dd>
-          <dt>定休日</dt><dd>毎週火曜・第3水曜</dd>
+          <dt>店名</dt><dd id="ac-name"></dd>
+          <dt>住所</dt><dd id="ac-address"></dd>
+          <dt>電話</dt><dd id="ac-tel"></dd>
+          <dt>営業時間</dt><dd id="ac-hours"></dd>
+          <dt>定休日</dt><dd id="ac-holiday"></dd>
         </dl>
       </div>
-      <!-- ★Googleマップ: 共有 → 地図を埋め込む → HTMLをコピーして下のiframeと差し替え -->
-      <div class="map-embed">
-        <iframe src="https://www.google.com/maps?q=tokyo+station&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
+      <div class="map-embed" id="ac-map"></div>
     </div>
   </div>
 </section>
 
-<!-- ⑨ フッター -->
 <footer>
   <div class="wrap">
-    <div class="logo">salon &amp; store LUCE</div>
+    <div class="logo" id="foot-name">salon &amp; store LUCE</div>
     <p>&copy; 2026 LUCE. All rights reserved.</p>
   </div>
 </footer>
 
-<!-- ============================================================
-     ⑩ 構造化データ (JSON-LD)  ★Google検索で店舗情報を出すための土台
-        住所・電話・営業時間を上のアクセスと揃えて編集
-     ============================================================ -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "HairSalon",
-  "name": "salon & store LUCE",
-  "image": "https://example.com/images/ogp.jpg",
-  "url": "https://example.com/",
-  "telephone": "00-0000-0000",
-  "address": {
-    "@type": "PostalAddress",
-    "postalCode": "000-0000",
-    "addressRegion": "○○県",
-    "addressLocality": "○○市",
-    "streetAddress": "○○ 1-2-3"
-  },
-  "openingHours": "Mo,We,Th,Fr,Sa,Su 10:00-19:00",
-  "priceRange": "¥¥"
-}
-</script>
+<script type="application/ld+json" id="ld-json"></script>
 
+<!-- データを読み込んで画面に反映 -->
+<script src="./data.js"></script>
+<script>
+(function () {
+  var S = window.SITE || {};
+  function set(id, val) { var el = document.getElementById(id); if (el && val != null) el.textContent = val; }
+  function setHtml(id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; }
+  function attr(id, name, val) { var el = document.getElementById(id); if (el && val != null) el.setAttribute(name, val); }
+
+  // 色
+  var r = document.documentElement.style;
+  if (S.colorMain)   r.setProperty("--color-main", S.colorMain);
+  if (S.colorAccent) r.setProperty("--color-accent", S.colorAccent);
+  if (S.colorBg)     r.setProperty("--color-bg", S.colorBg);
+
+  // 基本
+  set("logo", S.logo);
+  set("foot-name", S.name);
+  set("hero-title", S.heroTitle);
+  set("hero-text", S.tagline || S.heroText);
+
+  // ヒーロー画像
+  if (S.heroImage) {
+    document.getElementById("hero").style.background =
+      "linear-gradient(rgba(60,58,54,.35),rgba(60,58,54,.45)), url('" + S.heroImage + "') center/cover";
+  }
+
+  // SEO
+  if (S.seoTitle) document.title = S.seoTitle;
+  attr("meta-desc", "content", S.seoDesc || "");
+  attr("og-title", "content", S.seoTitle || S.name || "");
+  attr("og-desc", "content", S.seoDesc || "");
+
+  // サロンメニュー
+  if (Array.isArray(S.salonMenu)) {
+    setHtml("salon-menu", S.salonMenu.map(function (m) {
+      return "<li>" + (m.name || "") + " <span>" + (m.price || "") + "</span></li>";
+    }).join(""));
+  }
+
+  // 動線
+  attr("line-btn", "href", S.lineUrl || "#");
+  attr("form-btn", "href", S.formUrl || "#");
+
+  // アクセス
+  set("ac-name", S.name);
+  set("ac-address", (S.postal ? "〒" + S.postal + " " : "") + (S.address || ""));
+  set("ac-tel", S.tel);
+  set("ac-hours", S.hours);
+  set("ac-holiday", S.holiday);
+  if (S.mapEmbed) {
+    setHtml("ac-map", '<iframe src="' + S.mapEmbed + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>');
+  }
+
+  // 構造化データ（検索対策）
+  var ld = {
+    "@context": "https://schema.org", "@type": "HairSalon",
+    name: S.name, url: location.href, telephone: S.tel,
+    address: { "@type": "PostalAddress", postalCode: S.postal, streetAddress: S.address },
+    priceRange: "¥¥"
+  };
+  var ldEl = document.getElementById("ld-json");
+  if (ldEl) ldEl.textContent = JSON.stringify(ld);
+})();
+</script>
 </body>
 </html>

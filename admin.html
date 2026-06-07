@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>管理画面｜サイト編集</title>
+<style>
+:root { --main:#7c8a6e; --accent:#b89b5e; --bg:#f7f4ec; --line:#e2ddcf; --text:#3a3a36; }
+* { box-sizing: border-box; }
+body { margin:0; font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif; color:var(--text); background:var(--bg); line-height:1.7; }
+header.app { position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--line); padding:12px 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+header.app h1 { font-size:1.05rem; margin:0; flex:1; }
+.btn { border:0; border-radius:8px; padding:10px 16px; font-size:.9rem; font-weight:700; cursor:pointer; }
+.btn-main { background:var(--main); color:#fff; }
+.btn-sub { background:#fff; color:var(--main); border:1px solid var(--main); }
+.btn-ghost { background:#eee; color:#555; }
+.btn-danger { background:#fff; color:#c0392b; border:1px solid #c0392b; padding:6px 10px; font-size:.8rem; }
+.btn-add { background:var(--accent); color:#fff; }
+.wrap { max-width:840px; margin:0 auto; padding:20px 16px 100px; }
+.banner { background:#fff7e0; border:1px solid var(--accent); border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:.85rem; display:none; align-items:center; gap:10px; }
+.card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:18px; }
+.card h2 { font-size:1rem; margin:0 0 14px; padding-bottom:8px; border-bottom:2px solid var(--bg); }
+.field { margin-bottom:12px; }
+.field label { display:block; font-size:.8rem; color:#777; margin-bottom:4px; }
+.field input[type=text], .field input[type=number], .field textarea, .field input:not([type]) {
+  width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:8px; font-size:.9rem; font-family:inherit; background:#fff;
+}
+.field textarea { min-height:60px; resize:vertical; }
+.row { display:grid; gap:12px; grid-template-columns:1fr 1fr; }
+@media (max-width:560px){ .row { grid-template-columns:1fr; } }
+.color-row { display:flex; gap:18px; flex-wrap:wrap; }
+.color-row .field { flex:1; min-width:120px; }
+.color-row input[type=color] { width:100%; height:42px; border:1px solid var(--line); border-radius:8px; padding:2px; background:#fff; }
+.list-item { border:1px dashed var(--line); border-radius:10px; padding:14px; margin-bottom:12px; position:relative; background:#fafaf7; }
+.list-item .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.list-item .top strong { font-size:.9rem; }
+.imgpick { display:flex; gap:10px; align-items:center; }
+.imgpick .thumb { width:54px; height:54px; border-radius:8px; background:#ece7d8; object-fit:cover; flex:none; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:#aaa; overflow:hidden; }
+.imgpick .thumb img { width:100%; height:100%; object-fit:cover; }
+.imgpick .grow { flex:1; }
+.hint { font-size:.75rem; color:#999; margin-top:3px; }
+.check { display:flex; align-items:center; gap:8px; font-size:.9rem; }
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#3a3a36; color:#fff; padding:12px 22px; border-radius:999px; font-size:.85rem; opacity:0; transition:.3s; pointer-events:none; z-index:50; }
+.toast.show { opacity:1; }
+details.help { background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 20px; }
+details.help summary { cursor:pointer; font-weight:700; }
+details.help ol { padding-left:1.2em; }
+code { background:#f0ede3; padding:1px 6px; border-radius:4px; font-size:.85em; }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <h1>🛠 サイト管理画面</h1>
+  <a class="btn btn-ghost" href="./index.html" target="_blank">HPを確認</a>
+  <a class="btn btn-ghost" href="./shop.html" target="_blank">ショップを確認</a>
+  <button class="btn btn-main" id="save">保存（data.jsを書き出す）</button>
+</header>
+
+<div class="wrap">
+
+  <div class="banner" id="draftBanner">
+    <span>未保存の下書きを表示しています。</span>
+    <button class="btn btn-ghost" id="discardDraft" style="padding:4px 10px;font-size:.8rem">下書きを破棄して読み直す</button>
+  </div>
+
+  <!-- 基本情報 -->
+  <div class="card">
+    <h2>① 基本情報</h2>
+    <div class="row">
+      <div class="field"><label>店名（正式）</label><input type="text" data-s="name"></div>
+      <div class="field"><label>ロゴ表示（短い名前）</label><input type="text" data-s="logo"></div>
+    </div>
+    <div class="field"><label>キャッチコピー（サブ）</label><input type="text" data-s="tagline"></div>
+    <div class="field"><label>トップの大見出し</label><input type="text" data-s="heroTitle"></div>
+    <div class="field">
+      <label>トップ背景画像</label>
+      <div class="imgpick">
+        <div class="thumb" id="thumb-hero">なし</div>
+        <div class="grow">
+          <input type="text" data-s="heroImage" id="in-hero" placeholder="例: images/hero.jpg（空なら色背景）">
+          <input type="file" accept="image/*" data-imgfor="in-hero" data-thumb="thumb-hero">
+          <div class="hint">画像は <code>site/images/</code> フォルダに入れてください。ファイルを選ぶと欄が自動入力されます。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- デザイン -->
+  <div class="card">
+    <h2>② デザイン（色）</h2>
+    <div class="color-row">
+      <div class="field"><label>メインカラー</label><input type="color" data-s="colorMain"></div>
+      <div class="field"><label>アクセント</label><input type="color" data-s="colorAccent"></div>
+      <div class="field"><label>背景</label><input type="color" data-s="colorBg"></div>
+    </div>
+  </div>
+
+  <!-- 動線 -->
+  <div class="card">
+    <h2>③ 動線（予約・問い合わせ・購入の飛び先）</h2>
+    <div class="field"><label>LINE公式 友だち追加URL</label><input type="text" data-s="lineUrl"></div>
+    <div class="field"><label>問い合わせフォームURL（Googleフォーム等）</label><input type="text" data-s="formUrl"></div>
+    <div class="field"><label>商品「購入する」の既定の飛び先URL</label><input type="text" data-s="buyUrl"><div class="hint">BASE/STORES等のショップURL。商品ごとに個別指定も可（下の商品欄）。</div></div>
+  </div>
+
+  <!-- サロンメニュー -->
+  <div class="card">
+    <h2>④ サロンメニュー（料金）</h2>
+    <div id="menuList"></div>
+    <button class="btn btn-add" id="addMenu">＋ メニューを追加</button>
+  </div>
+
+  <!-- 店舗情報 -->
+  <div class="card">
+    <h2>⑤ 店舗情報・アクセス</h2>
+    <div class="row">
+      <div class="field"><label>郵便番号</label><input type="text" data-s="postal"></div>
+      <div class="field"><label>電話番号</label><input type="text" data-s="tel"></div>
+    </div>
+    <div class="field"><label>住所</label><input type="text" data-s="address"></div>
+    <div class="row">
+      <div class="field"><label>営業時間</label><input type="text" data-s="hours"></div>
+      <div class="field"><label>定休日</label><input type="text" data-s="holiday"></div>
+    </div>
+    <div class="field"><label>Googleマップ 埋め込みURL</label><input type="text" data-s="mapEmbed"><div class="hint">Googleマップで店舗検索→共有→「地図を埋め込む」→ src のURLを貼り付け。</div></div>
+    <div class="field"><label>検索タイトル（SEO）</label><input type="text" data-s="seoTitle"></div>
+    <div class="field"><label>検索説明文（SEO）</label><textarea data-s="seoDesc"></textarea></div>
+  </div>
+
+  <!-- 商品 -->
+  <div class="card">
+    <h2>⑥ 商品管理（ネットショップ）</h2>
+    <div id="productList"></div>
+    <button class="btn btn-add" id="addProduct">＋ 商品を追加</button>
+  </div>
+
+  <details class="help">
+    <summary>💡 保存して公開する手順</summary>
+    <ol>
+      <li>上の <b>「保存（data.jsを書き出す）」</b> を押す → <code>data.js</code> がダウンロードされます</li>
+      <li>ダウンロードした <code>data.js</code> を <code>web-ec-kit/site/</code> フォルダに入れて上書き<br>
+          （※ <code>publish.command</code> はダウンロードフォルダの新しい data.js を自動で取り込むので、そのまま次へ進んでもOK）</li>
+      <li><code>publish.command</code> をダブルクリック → 1〜2分で公開サイトに反映</li>
+    </ol>
+  </details>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="./data.js"></script>
+<script>
+(function () {
+  var DRAFT_KEY = "luce_admin_draft_v1";
+  // 初期データ（data.js から）
+  var baseSite = JSON.parse(JSON.stringify(window.SITE || {}));
+  var baseProducts = JSON.parse(JSON.stringify(window.PRODUCTS || []));
+  var state = { SITE: baseSite, PRODUCTS: baseProducts };
+
+  // 下書き（localStorage）があれば優先
+  var hadDraft = false;
+  try {
+    var d = localStorage.getItem(DRAFT_KEY);
+    if (d) { state = JSON.parse(d); hadDraft = true; }
+  } catch (e) {}
+  if (hadDraft) document.getElementById("draftBanner").style.display = "flex";
+
+  function toast(msg) { var t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(function(){ t.classList.remove("show"); }, 1800); }
+  function saveDraft() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(state)); } catch (e) {} }
+
+  /* ---- SITE 単純フィールド ---- */
+  function bindSiteFields() {
+    document.querySelectorAll("[data-s]").forEach(function (el) {
+      var key = el.getAttribute("data-s");
+      var v = state.SITE[key];
+      if (el.type === "color") el.value = /^#/.test(v) ? v : "#cccccc";
+      else el.value = (v == null ? "" : v);
+      el.addEventListener("input", function () { state.SITE[key] = el.value; saveDraft(); });
+    });
+  }
+
+  /* ---- 画像ピッカー（ファイル選択で欄を自動入力＋プレビュー） ---- */
+  function bindImagePickers() {
+    document.querySelectorAll('input[type=file][data-imgfor]').forEach(function (fileEl) {
+      fileEl.addEventListener("change", function () {
+        var f = fileEl.files && fileEl.files[0]; if (!f) return;
+        var target = document.getElementById(fileEl.getAttribute("data-imgfor"));
+        var path = "images/" + f.name;
+        target.value = path; target.dispatchEvent(new Event("input"));
+        var thumb = document.getElementById(fileEl.getAttribute("data-thumb"));
+        if (thumb) { var url = URL.createObjectURL(f); thumb.innerHTML = '<img src="' + url + '">'; }
+        toast("画像名を設定しました。実ファイルは site/images/ に入れてください");
+      });
+    });
+  }
+
+  /* ---- サロンメニュー（配列） ---- */
+  var menuList = document.getElementById("menuList");
+  function renderMenu() {
+    menuList.innerHTML = "";
+    (state.SITE.salonMenu || []).forEach(function (m, i) {
+      var div = document.createElement("div");
+      div.className = "list-item";
+      div.innerHTML =
+        '<div class="row">' +
+          '<div class="field"><label>メニュー名</label><input type="text" value="' + esc(m.name) + '" data-mi="' + i + '" data-mk="name"></div>' +
+          '<div class="field"><label>料金</label><input type="text" value="' + esc(m.price) + '" data-mi="' + i + '" data-mk="price"></div>' +
+        '</div>' +
+        '<button class="btn btn-danger" data-mdel="' + i + '">削除</button>';
+      menuList.appendChild(div);
+    });
+    menuList.querySelectorAll("[data-mi]").forEach(function (el) {
+      el.addEventListener("input", function () {
+        state.SITE.salonMenu[+el.getAttribute("data-mi")][el.getAttribute("data-mk")] = el.value; saveDraft();
+      });
+    });
+    menuList.querySelectorAll("[data-mdel]").forEach(function (el) {
+      el.addEventListener("click", function () { state.SITE.salonMenu.splice(+el.getAttribute("data-mdel"), 1); renderMenu(); saveDraft(); });
+    });
+  }
+  document.getElementById("addMenu").addEventListener("click", function () {
+    if (!state.SITE.salonMenu) state.SITE.salonMenu = [];
+    state.SITE.salonMenu.push({ name: "", price: "" }); renderMenu(); saveDraft();
+  });
+
+  /* ---- 商品（配列） ---- */
+  var productList = document.getElementById("productList");
+  function renderProducts() {
+    productList.innerHTML = "";
+    state.PRODUCTS.forEach(function (p, i) {
+      var div = document.createElement("div");
+      div.className = "list-item";
+      var thumbId = "pthumb-" + i, imgId = "pimg-" + i;
+      div.innerHTML =
+        '<div class="top"><strong>商品 ' + (i + 1) + '</strong><button class="btn btn-danger" data-pdel="' + i + '">削除</button></div>' +
+        '<div class="row">' +
+          '<div class="field"><label>商品名</label><input type="text" value="' + esc(p.name) + '" data-pi="' + i + '" data-pk="name"></div>' +
+          '<div class="field"><label>価格（税込・数字）</label><input type="number" value="' + (p.price||0) + '" data-pi="' + i + '" data-pk="price"></div>' +
+        '</div>' +
+        '<div class="row">' +
+          '<div class="field"><label>カテゴリ</label><input type="text" value="' + esc(p.category) + '" data-pi="' + i + '" data-pk="category"></div>' +
+          '<div class="field"><label>帯ラベル（任意）</label><input type="text" value="' + esc(p.badge) + '" data-pi="' + i + '" data-pk="badge"></div>' +
+        '</div>' +
+        '<div class="field"><label>商品説明</label><textarea data-pi="' + i + '" data-pk="desc">' + esc(p.desc) + '</textarea></div>' +
+        '<div class="field"><label>スタイリスト一言（任意）</label><input type="text" value="' + esc(p.note) + '" data-pi="' + i + '" data-pk="note"></div>' +
+        '<div class="field"><label>商品画像</label><div class="imgpick">' +
+          '<div class="thumb" id="' + thumbId + '">' + (p.image ? '<img src="' + esc(p.image) + '">' : 'なし') + '</div>' +
+          '<div class="grow">' +
+            '<input type="text" id="' + imgId + '" value="' + esc(p.image) + '" data-pi="' + i + '" data-pk="image" placeholder="例: images/item.jpg">' +
+            '<input type="file" accept="image/*" data-imgfor="' + imgId + '" data-thumb="' + thumbId + '">' +
+          '</div>' +
+        '</div></div>' +
+        '<div class="row">' +
+          '<label class="check"><input type="checkbox" ' + (p.stock ? "checked" : "") + ' data-pi="' + i + '" data-pk="stock"> 在庫あり</label>' +
+          '<div class="field"><label>購入URL（任意・空なら既定）</label><input type="text" value="' + esc(p.buyUrl) + '" data-pi="' + i + '" data-pk="buyUrl"></div>' +
+        '</div>';
+      productList.appendChild(div);
+    });
+    productList.querySelectorAll("[data-pi]").forEach(function (el) {
+      var ev = el.type === "checkbox" ? "change" : "input";
+      el.addEventListener(ev, function () {
+        var i = +el.getAttribute("data-pi"), k = el.getAttribute("data-pk");
+        var val = el.type === "checkbox" ? el.checked : (k === "price" ? Number(el.value) : el.value);
+        state.PRODUCTS[i][k] = val; saveDraft();
+      });
+    });
+    productList.querySelectorAll("[data-pdel]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (confirm("この商品を削除しますか？")) { state.PRODUCTS.splice(+el.getAttribute("data-pdel"), 1); renderProducts(); bindImagePickers(); saveDraft(); }
+      });
+    });
+    bindImagePickers();
+  }
+  document.getElementById("addProduct").addEventListener("click", function () {
+    state.PRODUCTS.push({ id: "item-" + (state.PRODUCTS.length + 1), name: "", price: 0, category: "", image: "", stock: true, badge: "", desc: "", note: "", buyUrl: "" });
+    renderProducts(); saveDraft();
+  });
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]; }); }
+
+  /* ---- 書き出し（data.js を生成してダウンロード） ---- */
+  function buildDataJs() {
+    var header = "/* このファイルは管理画面 admin.html から書き出されました */\n";
+    return header +
+      "window.SITE = " + JSON.stringify(state.SITE, null, 2) + ";\n\n" +
+      "window.PRODUCTS = " + JSON.stringify(state.PRODUCTS, null, 2) + ";\n";
+  }
+  document.getElementById("save").addEventListener("click", function () {
+    var blob = new Blob([buildDataJs()], { type: "text/javascript" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "data.js";
+    document.body.appendChild(a); a.click(); a.remove();
+    toast("data.js を書き出しました。site/ に入れて publish.command を実行");
+  });
+
+  document.getElementById("discardDraft").addEventListener("click", function () {
+    localStorage.removeItem(DRAFT_KEY); location.reload();
+  });
+
+  // 描画
+  bindSiteFields();
+  bindImagePickers();
+  renderMenu();
+  renderProducts();
+})();
+</script>
+</body>
+</html>
