@@ -167,8 +167,8 @@ footer .logo { color: #fff; margin-bottom: 8px; }
 
 <script type="application/ld+json" id="ld-json"></script>
 
-<!-- データを読み込んで画面に反映 -->
-<script src="./data.js"></script>
+<!-- データを読み込んで画面に反映（常に最新を取得・キャッシュ回避） -->
+<script>document.write('<scr'+'ipt src="./data.js?t='+Date.now()+'"><\/scr'+'ipt>');</script>
 <script>
 (function () {
   var S = window.SITE || {};
