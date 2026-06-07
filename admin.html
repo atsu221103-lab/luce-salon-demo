@@ -136,13 +136,14 @@ code { background:#f0ede3; padding:1px 6px; border-radius:4px; font-size:.85em; 
   </div>
 
   <details class="help">
-    <summary>💡 保存して公開する手順</summary>
-    <ol>
-      <li>上の <b>「保存（data.jsを書き出す）」</b> を押す → <code>data.js</code> がダウンロードされます</li>
-      <li>ダウンロードした <code>data.js</code> を <code>web-ec-kit/site/</code> フォルダに入れて上書き<br>
-          （※ <code>publish.command</code> はダウンロードフォルダの新しい data.js を自動で取り込むので、そのまま次へ進んでもOK）</li>
-      <li><code>publish.command</code> をダブルクリック → 1〜2分で公開サイトに反映</li>
-    </ol>
+    <summary>💡 保存と公開について</summary>
+    <p><b>自動公開モード（おすすめ）</b><br>
+      <code>admin-start.command</code> をダブルクリックして開いた管理画面なら、
+      上の <b>「保存」</b> を押すだけで、そのまま公開サイトに反映されます（他の操作は不要）。</p>
+    <p><b>それ以外で開いた場合</b><br>
+      「保存」を押すと <code>data.js</code> がダウンロードされます。続けて
+      <code>publish.command</code> をダブルクリックすると反映されます
+      （ダウンロードした data.js は自動で取り込まれます）。</p>
   </details>
 
 </div>
@@ -286,12 +287,33 @@ code { background:#f0ede3; padding:1px 6px; border-radius:4px; font-size:.85em; 
       "window.SITE = " + JSON.stringify(state.SITE, null, 2) + ";\n\n" +
       "window.PRODUCTS = " + JSON.stringify(state.PRODUCTS, null, 2) + ";\n";
   }
-  document.getElementById("save").addEventListener("click", function () {
-    var blob = new Blob([buildDataJs()], { type: "text/javascript" });
+  function isLocalServer() { return location.hostname === "localhost" || location.hostname === "127.0.0.1"; }
+  function download(content) {
+    var blob = new Blob([content], { type: "text/javascript" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob); a.download = "data.js";
     document.body.appendChild(a); a.click(); a.remove();
-    toast("data.js を書き出しました。site/ に入れて publish.command を実行");
+  }
+  document.getElementById("save").addEventListener("click", async function () {
+    var content = buildDataJs();
+    var btn = this, orig = btn.textContent;
+    if (isLocalServer()) {
+      btn.disabled = true; btn.textContent = "公開中...";
+      try {
+        var r = await fetch("/api/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ data: content }) });
+        var j = await r.json();
+        if (!j.ok) throw new Error(j.error || "失敗");
+        toast("✅ 公開しました！1〜2分で反映されます");
+        localStorage.removeItem(DRAFT_KEY);
+      } catch (e) {
+        toast("自動公開できないため書き出しに切替えます");
+        download(content);
+      }
+      btn.disabled = false; btn.textContent = orig;
+    } else {
+      download(content);
+      toast("data.js を書き出しました。publish.command を実行してください");
+    }
   });
 
   document.getElementById("discardDraft").addEventListener("click", function () {
