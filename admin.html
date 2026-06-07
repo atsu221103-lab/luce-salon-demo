@@ -146,15 +146,43 @@ code { background:#f0ede3; padding:1px 6px; border-radius:4px; font-size:.85em; 
     </div>
   </div>
 
+  <!-- 自動公開の設定（GitHub） -->
+  <details class="help" id="ghSettings" style="margin-bottom:18px">
+    <summary>⚙ 自動公開の設定（GitHub・一度だけ）</summary>
+    <p>ここに GitHub のアクセストークンを保存すると、<b>この端末のブラウザだけで、保存ボタンを押すだけで自動公開</b>されます（<code>admin-start.command</code> も <code>publish.command</code> も不要）。スマホの公開URL管理画面でも使えます。</p>
+    <div class="field"><label>アクセストークン（fine-grained PAT）</label><input type="password" id="gh-token" placeholder="github_pat_..."></div>
+    <div class="row">
+      <div class="field"><label>オーナー</label><input type="text" id="gh-owner"></div>
+      <div class="field"><label>リポジトリ</label><input type="text" id="gh-repo"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>ブランチ</label><input type="text" id="gh-branch"></div>
+      <div class="field"><label>ファイル</label><input type="text" id="gh-path"></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-main" id="gh-save">設定を保存（この端末に記憶）</button>
+      <button class="btn btn-sub" id="gh-test">接続テスト</button>
+      <span id="gh-status" style="font-size:.85rem"></span>
+    </div>
+    <p class="hint" style="margin-top:10px">
+      トークンの作り方：GitHub → Settings → Developer settings → <b>Fine-grained tokens</b> →
+      Repository access で <code>luce-salon-demo</code> のみを選び、Permissions の <b>Contents</b> を <b>Read and write</b> にして発行。<br>
+      ⚠ トークンはこの端末のブラウザにのみ保存されます（公開コードには含まれません）。共有PCでは使わないでください。GitHubでいつでも無効化できます。
+    </p>
+  </details>
+
   <details class="help">
-    <summary>💡 保存と公開について</summary>
-    <p><b>自動公開モード（おすすめ）</b><br>
+    <summary>💡 保存と公開について（3つの方法）</summary>
+    <p><b>① GitHubトークンを設定（いちばん手軽・どこからでも）</b><br>
+      上の「⚙ 自動公開の設定」でトークンを保存すれば、
+      公開URLの管理画面やスマホからでも、<b>「保存」を押すだけで自動公開</b>されます。
+      <code>admin-start.command</code> も <code>publish.command</code> も不要。</p>
+    <p><b>② ローカル管理サーバ経由</b><br>
       <code>admin-start.command</code> をダブルクリックして開いた管理画面なら、
-      上の <b>「保存」</b> を押すだけで、そのまま公開サイトに反映されます（他の操作は不要）。</p>
-    <p><b>それ以外で開いた場合</b><br>
-      「保存」を押すと <code>data.js</code> がダウンロードされます。続けて
-      <code>publish.command</code> をダブルクリックすると反映されます
-      （ダウンロードした data.js は自動で取り込まれます）。</p>
+      <b>「保存」だけで自動公開</b>（トークン不要）。</p>
+    <p><b>③ 何も設定していない場合</b><br>
+      「保存」で <code>data.js</code> がダウンロードされ、
+      <code>publish.command</code> をダブルクリックで反映されます。</p>
   </details>
 
 </div>
@@ -305,25 +333,75 @@ code { background:#f0ede3; padding:1px 6px; border-radius:4px; font-size:.85em; 
     a.href = URL.createObjectURL(blob); a.download = "data.js";
     document.body.appendChild(a); a.click(); a.remove();
   }
+
+  /* GitHub 直接公開（端末のブラウザにトークンを保存して使う） */
+  var GH_KEY = "luce_gh_cfg_v1";
+  function ghDefaults() { return { owner: "atsu221103-lab", repo: "luce-salon-demo", branch: "main", path: "data.js", token: "" }; }
+  function getGh() { try { return Object.assign(ghDefaults(), JSON.parse(localStorage.getItem(GH_KEY) || "{}")); } catch (e) { return ghDefaults(); } }
+  function setGh(c) { localStorage.setItem(GH_KEY, JSON.stringify(c)); }
+  function b64utf8(str) { var bytes = new TextEncoder().encode(str), bin = ""; for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]); return btoa(bin); }
+  async function ghGetSha(c) {
+    var r = await fetch("https://api.github.com/repos/" + c.owner + "/" + c.repo + "/contents/" + c.path + "?ref=" + encodeURIComponent(c.branch),
+      { headers: { Authorization: "Bearer " + c.token, Accept: "application/vnd.github+json" } });
+    if (r.status === 200) return (await r.json()).sha;
+    if (r.status === 404) return null;
+    throw new Error("接続失敗 (" + r.status + ")");
+  }
+  async function ghPublish(content, c) {
+    var sha = await ghGetSha(c);
+    var body = { message: "update via web admin", content: b64utf8(content), branch: c.branch };
+    if (sha) body.sha = sha;
+    var r = await fetch("https://api.github.com/repos/" + c.owner + "/" + c.repo + "/contents/" + c.path,
+      { method: "PUT", headers: { Authorization: "Bearer " + c.token, Accept: "application/vnd.github+json", "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (r.status !== 200 && r.status !== 201) throw new Error("公開失敗 (" + r.status + ")");
+    return true;
+  }
+
+  /* 設定パネル */
+  (function initGhPanel() {
+    var c = getGh();
+    var map = { token: "gh-token", owner: "gh-owner", repo: "gh-repo", branch: "gh-branch", path: "gh-path" };
+    Object.keys(map).forEach(function (k) { var el = document.getElementById(map[k]); if (el) el.value = c[k] || ""; });
+    var status = document.getElementById("gh-status");
+    function val(id) { return (document.getElementById(id).value || "").trim(); }
+    function refresh() { var on = !!getGh().token; status.textContent = on ? "自動公開：ON" : "自動公開：OFF（未設定）"; status.style.color = on ? "#2e7d32" : "#999"; }
+    refresh();
+    document.getElementById("gh-save").addEventListener("click", function () {
+      setGh({ token: val("gh-token"), owner: val("gh-owner"), repo: val("gh-repo"), branch: val("gh-branch"), path: val("gh-path") });
+      refresh(); toast("設定を保存しました");
+    });
+    document.getElementById("gh-test").addEventListener("click", async function () {
+      status.textContent = "接続テスト中..."; status.style.color = "#999";
+      try { await ghGetSha({ token: val("gh-token"), owner: val("gh-owner"), repo: val("gh-repo"), branch: val("gh-branch"), path: val("gh-path") }); status.textContent = "✅ 接続OK"; status.style.color = "#2e7d32"; }
+      catch (e) { status.textContent = "⚠ " + e.message; status.style.color = "#c0392b"; }
+    });
+  })();
+
   document.getElementById("save").addEventListener("click", async function () {
     var content = buildDataJs();
     var btn = this, orig = btn.textContent;
-    if (isLocalServer()) {
-      btn.disabled = true; btn.textContent = "公開中...";
-      try {
+    btn.disabled = true; btn.textContent = "公開中...";
+    try {
+      // 1) ローカル管理サーバ経由
+      if (isLocalServer()) {
         var r = await fetch("/api/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ data: content }) });
         var j = await r.json();
         if (!j.ok) throw new Error(j.error || "失敗");
-        toast("✅ 公開しました！1〜2分で反映されます");
-        localStorage.removeItem(DRAFT_KEY);
-      } catch (e) {
-        toast("自動公開できないため書き出しに切替えます");
-        download(content);
+        toast("✅ 公開しました！1〜2分で反映されます"); localStorage.removeItem(DRAFT_KEY); return;
       }
-      btn.disabled = false; btn.textContent = orig;
-    } else {
+      // 2) GitHub 直接公開（トークン設定済みなら）
+      var c = getGh();
+      if (c.token) {
+        await ghPublish(content, c);
+        toast("✅ 公開しました！1〜2分で反映されます"); localStorage.removeItem(DRAFT_KEY); return;
+      }
+      // 3) ダウンロード（未設定時）
+      download(content); toast("data.js を書き出しました。publish.command を実行してください");
+    } catch (e) {
+      toast("自動公開できないため書き出しに切替えます（" + e.message + "）");
       download(content);
-      toast("data.js を書き出しました。publish.command を実行してください");
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
     }
   });
 
