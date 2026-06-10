@@ -35,7 +35,7 @@ window.SITE = {
   "hours": "10:00 - 19:00",
   "holiday": "毎週火曜・第3水曜",
   "mapEmbed": "https://www.google.com/maps?q=tokyo+station&output=embed",
-  "seoTitle": "salon & store LUCE｜セレクトショップ併設の美容サロン",
+  "seoTitle": "mofa｜セレクトショップ併設の美容サロン",
   "seoDesc": "髪を整え、暮らしを選ぶ。ヘアサロンとライフスタイルセレクトショップを併設した salon & store LUCE。"
 };
 
